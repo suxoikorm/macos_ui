@@ -41,6 +41,7 @@ class ResizablePane extends StatefulWidget {
     required this.resizableSide,
     this.windowBreakpoint,
     required this.startSize,
+    this.onSizeChanged,
   })  : assert(
           maxSize >= minSize,
           'minSize should not be more than maxSize.',
@@ -98,6 +99,8 @@ class ResizablePane extends StatefulWidget {
 
   /// Specifies the width of the window at which this [ResizablePane] will be hidden.
   final double? windowBreakpoint;
+
+  final Function(double size)? onSizeChanged;
 
   @override
   State<ResizablePane> createState() => _ResizablePaneState();
@@ -162,8 +165,7 @@ class _ResizablePaneState extends State<ResizablePane> {
             },
             onVerticalDragUpdate: (details) {
               setState(() {
-                final newHeight = _dragStartSize +
-                    (_dragStartPosition - details.globalPosition.dy);
+                final newHeight = _dragStartSize + (_dragStartPosition - details.globalPosition.dy);
                 _size = math.max(
                   widget.minSize,
                   math.min(
@@ -194,10 +196,8 @@ class _ResizablePaneState extends State<ResizablePane> {
             onHorizontalDragUpdate: (details) {
               setState(() {
                 final newWidth = _resizeOnRight
-                    ? _dragStartSize -
-                        (_dragStartPosition - details.globalPosition.dx)
-                    : _dragStartSize +
-                        (_dragStartPosition - details.globalPosition.dx);
+                    ? _dragStartSize - (_dragStartPosition - details.globalPosition.dx)
+                    : _dragStartSize + (_dragStartPosition - details.globalPosition.dx);
                 _size = math.max(
                   widget.minSize,
                   math.min(
@@ -205,6 +205,8 @@ class _ResizablePaneState extends State<ResizablePane> {
                     newWidth,
                   ),
                 );
+                widget.onSizeChanged?.call(_size);
+
                 if (_size == widget.minSize) {
                   _cursor = _resizeOnRight
                       ? SystemMouseCursors.resizeRight
@@ -224,9 +226,7 @@ class _ResizablePaneState extends State<ResizablePane> {
   @override
   void initState() {
     super.initState();
-    _cursor = _resizeOnTop
-        ? SystemMouseCursors.resizeRow
-        : SystemMouseCursors.resizeColumn;
+    _cursor = _resizeOnTop ? SystemMouseCursors.resizeRow : SystemMouseCursors.resizeColumn;
     _size = widget.startSize;
     _scrollController.addListener(() => setState(() {}));
   }
@@ -258,13 +258,11 @@ class _ResizablePaneState extends State<ResizablePane> {
     final maxWidth = media.size.width;
 
     if (_resizeOnTop) {
-      if (widget.windowBreakpoint != null &&
-          maxHeight <= widget.windowBreakpoint!) {
+      if (widget.windowBreakpoint != null && maxHeight <= widget.windowBreakpoint!) {
         return const SizedBox.shrink();
       }
     } else {
-      if (widget.windowBreakpoint != null &&
-          maxWidth <= widget.windowBreakpoint!) {
+      if (widget.windowBreakpoint != null && maxWidth <= widget.windowBreakpoint!) {
         return const SizedBox.shrink();
       }
     }

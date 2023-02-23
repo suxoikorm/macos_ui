@@ -28,6 +28,7 @@ class MacosWindow extends StatefulWidget {
     this.sidebar,
     this.backgroundColor,
     this.endSidebar,
+    this.onSidebarWidthChanged,
   });
 
   /// Specifies the background color for the Window.
@@ -46,6 +47,8 @@ class MacosWindow extends StatefulWidget {
 
   /// A sidebar to display at the right of the window.
   final Sidebar? endSidebar;
+
+  final Function(double width)? onSidebarWidthChanged;
 
   @override
   State<MacosWindow> createState() => _MacosWindowState();
@@ -69,11 +72,9 @@ class _MacosWindowState extends State<MacosWindow> {
   @override
   void initState() {
     super.initState();
-    _sidebarWidth = (widget.sidebar?.startWidth ?? widget.sidebar?.minWidth) ??
-        _sidebarWidth;
+    _sidebarWidth = (widget.sidebar?.startWidth ?? widget.sidebar?.minWidth) ?? _sidebarWidth;
     _endSidebarWidth =
-        (widget.endSidebar?.startWidth ?? widget.endSidebar?.minWidth) ??
-            _endSidebarWidth;
+        (widget.endSidebar?.startWidth ?? widget.endSidebar?.minWidth) ?? _endSidebarWidth;
     if (widget.sidebar?.builder != null) {
       _sidebarScrollController.addListener(() => setState(() {}));
     }
@@ -142,8 +143,7 @@ class _MacosWindowState extends State<MacosWindow> {
     if (widget.sidebar?.decoration?.color != null) {
       sidebarBackgroundColor = widget.sidebar!.decoration!.color!;
     } else if (isMac &&
-        MediaQuery.of(context).platformBrightness.isDark ==
-            theme.brightness.isDark) {
+        MediaQuery.of(context).platformBrightness.isDark == theme.brightness.isDark) {
       // Only show blurry, transparent sidebar when platform brightness and app
       // brightness are the same, otherwise it looks awful. Also only make the
       // sidebar transparent on native Mac, or it will just be flat black or
@@ -159,8 +159,7 @@ class _MacosWindowState extends State<MacosWindow> {
     if (widget.endSidebar?.decoration?.color != null) {
       endSidebarBackgroundColor = widget.endSidebar!.decoration!.color!;
     } else if (isMac &&
-        MediaQuery.of(context).platformBrightness.isDark ==
-            theme.brightness.isDark) {
+        MediaQuery.of(context).platformBrightness.isDark == theme.brightness.isDark) {
       endSidebarBackgroundColor = theme.canvasColor;
     } else {
       endSidebarBackgroundColor = theme.brightness.isDark
@@ -176,13 +175,11 @@ class _MacosWindowState extends State<MacosWindow> {
         final width = constraints.maxWidth;
         final height = constraints.maxHeight;
         final isAtBreakpoint = width <= (widget.sidebar?.windowBreakpoint ?? 0);
-        final isAtEndBreakpoint =
-            width <= (widget.endSidebar?.windowBreakpoint ?? 0);
+        final isAtEndBreakpoint = width <= (widget.endSidebar?.windowBreakpoint ?? 0);
         final canShowSidebar = _showSidebar && !isAtBreakpoint;
         final canShowEndSidebar = _showEndSidebar && !isAtEndBreakpoint;
         final visibleSidebarWidth = canShowSidebar ? _sidebarWidth : 0.0;
-        final visibleEndSidebarWidth =
-            canShowEndSidebar ? _endSidebarWidth : 0.0;
+        final visibleEndSidebarWidth = canShowEndSidebar ? _endSidebarWidth : 0.0;
 
         final layout = Stack(
           children: [
@@ -220,8 +217,7 @@ class _MacosWindowState extends State<MacosWindow> {
                       if (_sidebarScrollController.hasClients &&
                           _sidebarScrollController.offset > 0.0)
                         Divider(thickness: 1, height: 1, color: dividerColor),
-                      if (widget.sidebar!.top != null &&
-                          constraints.maxHeight > 81)
+                      if (widget.sidebar!.top != null && constraints.maxHeight > 81)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: widget.sidebar!.top!,
@@ -231,13 +227,11 @@ class _MacosWindowState extends State<MacosWindow> {
                           controller: _sidebarScrollController,
                           child: Padding(
                             padding: widget.sidebar?.padding ?? EdgeInsets.zero,
-                            child: widget.sidebar!
-                                .builder(context, _sidebarScrollController),
+                            child: widget.sidebar!.builder(context, _sidebarScrollController),
                           ),
                         ),
                       ),
-                      if (widget.sidebar?.bottom != null &&
-                          constraints.maxHeight > 141)
+                      if (widget.sidebar?.bottom != null && constraints.maxHeight > 141)
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: widget.sidebar!.bottom!,
@@ -297,14 +291,12 @@ class _MacosWindowState extends State<MacosWindow> {
 
                       if (sidebar.startWidth != null &&
                           sidebar.snapToStartBuffer != null &&
-                          (newWidth - sidebar.startWidth!).abs() <=
-                              sidebar.snapToStartBuffer!) {
+                          (newWidth - sidebar.startWidth!).abs() <= sidebar.snapToStartBuffer!) {
                         newWidth = sidebar.startWidth!;
                       }
 
                       if (sidebar.dragClosed) {
-                        final closeBelow =
-                            sidebar.minWidth - sidebar.dragClosedBuffer;
+                        final closeBelow = sidebar.minWidth - sidebar.dragClosedBuffer;
                         _showSidebar = newWidth >= closeBelow;
                       }
 
@@ -315,6 +307,8 @@ class _MacosWindowState extends State<MacosWindow> {
                           newWidth,
                         ),
                       );
+
+                      widget.onSidebarWidthChanged?.call(_sidebarWidth);
 
                       if (_sidebarWidth == sidebar.minWidth) {
                         _sidebarCursor = SystemMouseCursors.resizeRight;
@@ -373,10 +367,8 @@ class _MacosWindowState extends State<MacosWindow> {
                         child: MacosScrollbar(
                           controller: _endSidebarScrollController,
                           child: Padding(
-                            padding:
-                                widget.endSidebar?.padding ?? EdgeInsets.zero,
-                            child: widget.endSidebar!
-                                .builder(context, _endSidebarScrollController),
+                            padding: widget.endSidebar?.padding ?? EdgeInsets.zero,
+                            child: widget.endSidebar!.builder(context, _endSidebarScrollController),
                           ),
                         ),
                       ),
@@ -419,8 +411,7 @@ class _MacosWindowState extends State<MacosWindow> {
                       }
 
                       if (endSidebar.dragClosed) {
-                        final closeBelow =
-                            endSidebar.minWidth - endSidebar.dragClosedBuffer;
+                        final closeBelow = endSidebar.minWidth - endSidebar.dragClosedBuffer;
                         _showEndSidebar = newWidth >= closeBelow;
                       }
 
@@ -525,8 +516,7 @@ class MacosWindowScope extends InheritedWidget {
   ///
   /// The [context] argument must not be null.
   static MacosWindowScope of(BuildContext context) {
-    final MacosWindowScope? result =
-        context.dependOnInheritedWidgetOfExactType<MacosWindowScope>();
+    final MacosWindowScope? result = context.dependOnInheritedWidgetOfExactType<MacosWindowScope>();
     assert(result != null, 'No MacosWindowScope found in context');
     return result!;
   }
@@ -566,7 +556,6 @@ class MacosWindowScope extends InheritedWidget {
 
   @override
   bool updateShouldNotify(MacosWindowScope oldWidget) {
-    return constraints != oldWidget.constraints ||
-        isSidebarShown != oldWidget.isSidebarShown;
+    return constraints != oldWidget.constraints || isSidebarShown != oldWidget.isSidebarShown;
   }
 }
