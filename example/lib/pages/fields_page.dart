@@ -87,8 +87,7 @@ class _FieldsPageState extends State<FieldsPage> {
                   SizedBox(
                     width: 300.0,
                     child: MacosSearchField(
-                      results:
-                          countries.map((e) => SearchResultItem(e)).toList(),
+                      results: countries.map((e) => SearchResultItem(e)).toList(),
                       placeholder: 'Search for a country...',
                       onResultSelected: (resultItem) {
                         // Retrieve the user-selected search suggestion via its
@@ -352,8 +351,8 @@ const countries = [
 var actionResults = [
   SearchResultItem(
     "Build project",
-    child: Row(
-      children: const [
+    child: const Row(
+      children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.0),
           child: MacosIcon(CupertinoIcons.hammer),
@@ -365,8 +364,8 @@ var actionResults = [
   ),
   SearchResultItem(
     "Debug project",
-    child: Row(
-      children: const [
+    child: const Row(
+      children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.0),
           child: MacosIcon(CupertinoIcons.tickets),
@@ -378,8 +377,8 @@ var actionResults = [
   ),
   SearchResultItem(
     "Open containing folder",
-    child: Row(
-      children: const [
+    child: const Row(
+      children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.0),
           child: MacosIcon(CupertinoIcons.folder),
