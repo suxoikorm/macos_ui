@@ -76,6 +76,7 @@ class ResizablePane extends StatefulWidget {
     required this.resizableSide,
     this.windowBreakpoint,
     required this.startSize,
+    this.onSizeChanged,
   })  : builder = null,
         useScrollBar = false,
         assert(
@@ -249,7 +250,7 @@ class _ResizablePaneState extends State<ResizablePane> {
                     newWidth,
                   ),
                 );
-                
+
                 widget.onSizeChanged?.call(_size);
 
                 if (_size == widget.minSize) {
