@@ -8,7 +8,12 @@ import 'package:macos_ui/macos_ui.dart';
 import 'package:macos_ui/src/library.dart';
 
 export 'package:flutter/services.dart'
-    show TextInputType, TextInputAction, TextCapitalization, SmartQuotesType, SmartDashesType;
+    show
+        TextInputType,
+        TextInputAction,
+        TextCapitalization,
+        SmartQuotesType,
+        SmartDashesType;
 
 const TextStyle _kDefaultPlaceholderStyle = TextStyle(
   fontWeight: FontWeight.w400,
@@ -90,7 +95,8 @@ enum OverlayVisibilityMode {
   always,
 }
 
-class _TextFieldSelectionGestureDetectorBuilder extends TextSelectionGestureDetectorBuilder {
+class _TextFieldSelectionGestureDetectorBuilder
+    extends TextSelectionGestureDetectorBuilder {
   _TextFieldSelectionGestureDetectorBuilder({
     required _MacosTextFieldState state,
   })  : _state = state,
@@ -105,9 +111,10 @@ class _TextFieldSelectionGestureDetectorBuilder extends TextSelectionGestureDete
     // this handler. If the clear button widget recognizes the up event,
     // then do not handle it.
     if (_state._clearGlobalKey.currentContext != null) {
-      final RenderBox renderBox =
-          _state._clearGlobalKey.currentContext!.findRenderObject()! as RenderBox;
-      final Offset localOffset = renderBox.globalToLocal(details.globalPosition);
+      final RenderBox renderBox = _state._clearGlobalKey.currentContext!
+          .findRenderObject()! as RenderBox;
+      final Offset localOffset =
+          renderBox.globalToLocal(details.globalPosition);
       if (renderBox.hitTest(BoxHitTestResult(), position: localOffset)) {
         return;
       }
@@ -117,11 +124,14 @@ class _TextFieldSelectionGestureDetectorBuilder extends TextSelectionGestureDete
     }
     _state._requestKeyboard();
     if (_state.widget.onTap != null) _state.widget.onTap!();
+
+    super.onSingleTapUp(details);
   }
 
   @override
   void onDragSelectionEnd(TapDragEndDetails details) {
     _state._requestKeyboard();
+    super.onDragSelectionEnd(details);
   }
 }
 
@@ -283,10 +293,10 @@ class MacosTextField extends StatefulWidget {
     this.scrollPhysics,
     this.autofillHints,
     this.restorationId,
-  })  : smartDashesType =
-            smartDashesType ?? (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled),
-        smartQuotesType =
-            smartQuotesType ?? (obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled),
+  })  : smartDashesType = smartDashesType ??
+            (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled),
+        smartQuotesType = smartQuotesType ??
+            (obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled),
         assert(maxLines == null || maxLines > 0),
         assert(minLines == null || minLines > 0),
         assert(
@@ -297,7 +307,8 @@ class MacosTextField extends StatefulWidget {
           !expands || (maxLines == null && minLines == null),
           'minLines and maxLines must be null when expands is true.',
         ),
-        assert(!obscureText || maxLines == 1, 'Obscured fields cannot be multiline.'),
+        assert(!obscureText || maxLines == 1,
+            'Obscured fields cannot be multiline.'),
         assert(maxLength == null || maxLength > 0),
         // Assert the following instead of setting it directly to avoid surprising the user by silently changing the value they set.
         assert(
@@ -305,8 +316,8 @@ class MacosTextField extends StatefulWidget {
                 maxLines == 1 ||
                 !identical(keyboardType, TextInputType.text),
             'Use keyboardType TextInputType.multiline when using TextInputAction.newline on a multiline TextField.'),
-        keyboardType =
-            keyboardType ?? (maxLines == 1 ? TextInputType.text : TextInputType.multiline);
+        keyboardType = keyboardType ??
+            (maxLines == 1 ? TextInputType.text : TextInputType.multiline);
 
   /// Creates a borderless macOS-style text field.
   ///
@@ -350,7 +361,7 @@ class MacosTextField extends StatefulWidget {
     this.focusNode,
     this.decoration,
     this.focusedDecoration,
-    this.padding = const EdgeInsets.fromLTRB(2.0, 4.0, 2.0, 4.0),
+    this.padding = const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
     this.placeholder,
     this.placeholderStyle = _kDefaultPlaceholderStyle,
     this.prefix,
@@ -401,10 +412,10 @@ class MacosTextField extends StatefulWidget {
     this.autofillHints,
     this.restorationId,
     this.contextMenuBuilder = _defaultContextMenuBuilder,
-  })  : smartDashesType =
-            smartDashesType ?? (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled),
-        smartQuotesType =
-            smartQuotesType ?? (obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled),
+  })  : smartDashesType = smartDashesType ??
+            (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled),
+        smartQuotesType = smartQuotesType ??
+            (obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled),
         assert(maxLines == null || maxLines > 0),
         assert(minLines == null || minLines > 0),
         assert(
@@ -415,7 +426,8 @@ class MacosTextField extends StatefulWidget {
           !expands || (maxLines == null && minLines == null),
           'minLines and maxLines must be null when expands is true.',
         ),
-        assert(!obscureText || maxLines == 1, 'Obscured fields cannot be multiline.'),
+        assert(!obscureText || maxLines == 1,
+            'Obscured fields cannot be multiline.'),
         assert(maxLength == null || maxLength > 0),
         // Assert the following instead of setting it directly to avoid surprising the user by silently changing the value they set.
         assert(
@@ -423,8 +435,8 @@ class MacosTextField extends StatefulWidget {
                 maxLines == 1 ||
                 !identical(keyboardType, TextInputType.text),
             'Use keyboardType TextInputType.multiline when using TextInputAction.newline on a multiline TextField.'),
-        keyboardType =
-            keyboardType ?? (maxLines == 1 ? TextInputType.text : TextInputType.multiline);
+        keyboardType = keyboardType ??
+            (maxLines == 1 ? TextInputType.text : TextInputType.multiline);
 
   static Widget _defaultContextMenuBuilder(
     BuildContext context,
@@ -747,7 +759,7 @@ class MacosTextField extends StatefulWidget {
       'clearButtonMode',
       clearButtonMode,
     ));
-    properties.add(EnumProperty<TextInputType>(
+    properties.add(DiagnosticsProperty<TextInputType>(
       'keyboardType',
       keyboardType,
       defaultValue: TextInputType.text,
@@ -780,12 +792,14 @@ class MacosTextField extends StatefulWidget {
     properties.add(EnumProperty<SmartDashesType>(
       'smartDashesType',
       smartDashesType,
-      defaultValue: obscureText ? SmartDashesType.disabled : SmartDashesType.enabled,
+      defaultValue:
+          obscureText ? SmartDashesType.disabled : SmartDashesType.enabled,
     ));
     properties.add(EnumProperty<SmartQuotesType>(
       'smartQuotesType',
       smartQuotesType,
-      defaultValue: obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled,
+      defaultValue:
+          obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled,
     ));
     properties.add(DiagnosticsProperty<bool>(
       'enableSuggestions',
@@ -869,10 +883,12 @@ class _MacosTextFieldState extends State<MacosTextField>
   final GlobalKey _clearGlobalKey = GlobalKey();
 
   RestorableTextEditingController? _controller;
-  TextEditingController get _effectiveController => widget.controller ?? _controller!.value;
+  TextEditingController get _effectiveController =>
+      widget.controller ?? _controller!.value;
 
   FocusNode? _focusNode;
-  FocusNode get _effectiveFocusNode => widget.focusNode ?? (_focusNode ??= FocusNode());
+  FocusNode get _effectiveFocusNode =>
+      widget.focusNode ?? (_focusNode ??= FocusNode());
 
   MaxLengthEnforcement get _effectiveMaxLengthEnforcement =>
       widget.maxLengthEnforcement ??
@@ -880,14 +896,16 @@ class _MacosTextFieldState extends State<MacosTextField>
 
   bool _showSelectionHandles = false;
 
-  late _TextFieldSelectionGestureDetectorBuilder _selectionGestureDetectorBuilder;
+  late _TextFieldSelectionGestureDetectorBuilder
+      _selectionGestureDetectorBuilder;
 
   // API for TextSelectionGestureDetectorBuilderDelegate.
   @override
   bool get forcePressEnabled => true;
 
   @override
-  final GlobalKey<EditableTextState> editableTextKey = GlobalKey<EditableTextState>();
+  final GlobalKey<EditableTextState> editableTextKey =
+      GlobalKey<EditableTextState>();
 
   @override
   bool get selectionEnabled => widget.selectionEnabled;
@@ -896,7 +914,8 @@ class _MacosTextFieldState extends State<MacosTextField>
   @override
   void initState() {
     super.initState();
-    _selectionGestureDetectorBuilder = _TextFieldSelectionGestureDetectorBuilder(state: this);
+    _selectionGestureDetectorBuilder =
+        _TextFieldSelectionGestureDetectorBuilder(state: this);
     if (widget.controller == null) {
       _createLocalController();
     }
@@ -1098,7 +1117,8 @@ class _MacosTextFieldState extends State<MacosTextField>
                       ? () {
                           // Special handle onChanged for ClearButton
                           // Also call onChanged when the clear button is tapped.
-                          final bool textChanged = _effectiveController.text.isNotEmpty;
+                          final bool textChanged =
+                              _effectiveController.text.isNotEmpty;
                           _effectiveController.clear();
                           if (widget.onChanged != null && textChanged) {
                             widget.onChanged!(_effectiveController.text);
@@ -1140,6 +1160,7 @@ class _MacosTextFieldState extends State<MacosTextField>
   void dispose() {
     _focusNode?.dispose();
     _controller?.dispose();
+    _effectiveFocusNode.removeListener(_handleFocusChanged);
     super.dispose();
   }
 
@@ -1193,7 +1214,8 @@ class _MacosTextFieldState extends State<MacosTextField>
 
     final bool enabled = widget.enabled ?? true;
     final Offset cursorOffset = Offset(
-      _iOSHorizontalCursorOffsetPixels / MediaQuery.of(context).devicePixelRatio,
+      _iOSHorizontalCursorOffsetPixels /
+          MediaQuery.of(context).devicePixelRatio,
       0,
     );
     final List<TextInputFormatter> formatters = <TextInputFormatter>[
@@ -1236,15 +1258,20 @@ class _MacosTextFieldState extends State<MacosTextField>
         widget.keyboardAppearance ?? MacosTheme.brightnessOf(context);
     Color? cursorColor;
     cursorColor = MacosDynamicColor.maybeResolve(widget.cursorColor, context);
-    cursorColor ??= themeData.brightness.isDark ? MacosColors.white : MacosColors.black;
-    final Color disabledColor = MacosDynamicColor.resolve(_kDisabledBackground, context);
+    cursorColor ??=
+        themeData.brightness.isDark ? MacosColors.white : MacosColors.black;
+    final Color disabledColor =
+        MacosDynamicColor.resolve(_kDisabledBackground, context);
 
-    Color? decorationColor = MacosDynamicColor.maybeResolve(widget.decoration?.color, context);
+    Color? decorationColor =
+        MacosDynamicColor.maybeResolve(widget.decoration?.color, context);
     if (decorationColor.runtimeType == ResolvedMacosDynamicColor) {
-      if ((decorationColor as ResolvedMacosDynamicColor).color == const Color(0xffffffff) ||
+      if ((decorationColor as ResolvedMacosDynamicColor).color ==
+              const Color(0xffffffff) ||
           (decorationColor).darkColor == const Color(0xff000000)) {
-        decorationColor =
-            themeData.brightness.isDark ? const Color.fromRGBO(30, 30, 30, 1) : MacosColors.white;
+        decorationColor = themeData.brightness.isDark
+            ? const Color.fromRGBO(30, 30, 30, 1)
+            : MacosColors.white;
       }
     }
 
@@ -1306,7 +1333,8 @@ class _MacosTextFieldState extends State<MacosTextField>
       color: focusedDecoration.color ?? const Color(0x00000000),
     );
 
-    final Color selectionColor = MacosTheme.of(context).primaryColor.withOpacity(0.2);
+    final Color selectionColor =
+        MacosTheme.of(context).primaryColor.withOpacity(0.2);
 
     final Widget paddedEditable = Padding(
       padding: widget.padding,
@@ -1337,7 +1365,8 @@ class _MacosTextFieldState extends State<MacosTextField>
             minLines: widget.minLines,
             expands: widget.expands,
             selectionColor: selectionColor,
-            selectionControls: widget.selectionEnabled ? textSelectionControls : null,
+            selectionControls:
+                widget.selectionEnabled ? textSelectionControls : null,
             onChanged: widget.onChanged,
             onSelectionChanged: _handleSelectionChanged,
             onEditingComplete: widget.onEditingComplete,
@@ -1379,7 +1408,8 @@ class _MacosTextFieldState extends State<MacosTextField>
           ? null
           : () {
               if (!controller.selection.isValid) {
-                controller.selection = TextSelection.collapsed(offset: controller.text.length);
+                controller.selection =
+                    TextSelection.collapsed(offset: controller.text.length);
               }
               _requestKeyboard();
             },
@@ -1388,10 +1418,12 @@ class _MacosTextFieldState extends State<MacosTextField>
         child: AnimatedContainer(
           /// Value eyeballed from MacOS Big Sur
           duration: const Duration(milliseconds: 125),
-          decoration:
-              _effectiveFocusNode.hasFocus ? focusedDecoration : focusedPlaceholderDecoration,
+          decoration: _effectiveFocusNode.hasFocus
+              ? focusedDecoration
+              : focusedPlaceholderDecoration,
           child: Container(
-            decoration: _effectiveFocusNode.hasFocus ? null : effectiveDecoration,
+            decoration:
+                _effectiveFocusNode.hasFocus ? null : effectiveDecoration,
             child: _selectionGestureDetectorBuilder.buildGestureDetector(
               behavior: HitTestBehavior.translucent,
               child: Align(

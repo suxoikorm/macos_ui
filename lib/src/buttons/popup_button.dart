@@ -1091,8 +1091,7 @@ class _MacosPopupButtonState<T> extends State<MacosPopupButton<T>>
 
   void _handleTap() {
     final TextDirection? textDirection = Directionality.maybeOf(context);
-    const EdgeInsetsGeometry menuMargin =
-        EdgeInsetsDirectional.only(start: 4.0, end: 4.0);
+    const EdgeInsetsGeometry menuMargin = EdgeInsets.symmetric(horizontal: 4.0);
 
     final List<_MenuItem<T>> menuItems = <_MenuItem<T>>[
       for (int index = 0; index < widget.items!.length; index += 1)
@@ -1195,10 +1194,13 @@ class _MacosPopupButtonState<T> extends State<MacosPopupButton<T>>
       }
 
       hintIndex = items.length;
-      items.add(IgnorePointer(
-        ignoringSemantics: false,
-        child: displayedHint,
-      ));
+      items.add(
+        ExcludeSemantics(
+          child: IgnorePointer(
+            child: displayedHint,
+          ),
+        ),
+      );
     }
 
     // If value is null (then _selectedIndex is null) then we
@@ -1239,7 +1241,7 @@ class _MacosPopupButtonState<T> extends State<MacosPopupButton<T>>
                 boxShadow: [
                   BoxShadow(
                     color: buttonStyles.borderColor,
-                    offset: const Offset(0, .5),
+                    offset: const Offset(0, 0.5),
                     blurRadius: 0.2,
                     spreadRadius: 0,
                   ),
@@ -1251,7 +1253,7 @@ class _MacosPopupButtonState<T> extends State<MacosPopupButton<T>>
                 ),
                 borderRadius: _kBorderRadius,
               ),
-        padding: const EdgeInsets.fromLTRB(8.0, 0.0, 2.0, 0.0),
+        padding: const EdgeInsets.only(left: 8.0, right: 2.0),
         height: _kPopupButtonHeight,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
