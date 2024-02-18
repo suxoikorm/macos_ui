@@ -46,6 +46,7 @@ class ToolBar extends StatefulWidget with Diagnosticable {
     this.dividerColor,
     this.allowWallpaperTintingOverrides = true,
     this.enableBlur = false,
+    this.ignoreSafeArea = false,
   });
 
   /// Specifies the height of this [ToolBar].
@@ -149,6 +150,8 @@ class ToolBar extends StatefulWidget with Diagnosticable {
   /// the Flutter project.
   final bool allowWallpaperTintingOverrides;
 
+  final bool ignoreSafeArea;
+
   /// Whether this [ToolBar] should have a blur backdrop filter applied to it.
   final bool enableBlur;
 
@@ -159,8 +162,7 @@ class ToolBar extends StatefulWidget with Diagnosticable {
     properties.add(DiagnosticsProperty<Alignment>('alignment', alignment));
     properties.add(DiagnosticsProperty<Widget>('title', title));
     properties.add(DoubleProperty('titleWidth', titleWidth));
-    properties
-        .add(DiagnosticsProperty<BoxDecoration>('decoration', decoration));
+    properties.add(DiagnosticsProperty<BoxDecoration>('decoration', decoration));
     properties.add(DiagnosticsProperty<EdgeInsets>('padding', padding));
     properties.add(DiagnosticsProperty<Widget>('leading', leading));
     properties.add(FlagProperty(
@@ -187,8 +189,7 @@ class _ToolBarState extends State<ToolBar> {
   @override
   void didUpdateWidget(ToolBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.actions != null &&
-        widget.actions!.length != oldWidget.actions!.length) {
+    if (widget.actions != null && widget.actions!.length != oldWidget.actions!.length) {
       overflowedActionsCount = 0;
     }
   }
@@ -240,9 +241,8 @@ class _ToolBarState extends State<ToolBar> {
     bool doAllItemsShowLabel = true;
     if (widget.actions != null && widget.actions!.isNotEmpty) {
       inToolbarActions = widget.actions ?? [];
-      overflowedActions = inToolbarActions
-          .sublist(inToolbarActions.length - overflowedActionsCount)
-          .toList();
+      overflowedActions =
+          inToolbarActions.sublist(inToolbarActions.length - overflowedActionsCount).toList();
       // If all toolbar actions have labels shown below their icons,
       // reduce the overflow button's size as well.
       for (ToolbarItem item in widget.actions!) {
@@ -310,7 +310,7 @@ class _ToolBarState extends State<ToolBar> {
               top: false,
               right: false,
               bottom: false,
-              left: !(scope?.isSidebarShown ?? false),
+              left: widget.ignoreSafeArea ? false : !(scope?.isSidebarShown ?? false),
               child: leading ?? const SizedBox.shrink(),
             ),
           ),
