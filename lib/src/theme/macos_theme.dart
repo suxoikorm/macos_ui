@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:macos_ui/src/library.dart';
@@ -178,7 +179,7 @@ class _InheritedMacosTheme extends InheritedWidget {
 /// See also:
 ///
 ///  * [MacosTheme], in which this [MacosThemeData] is inserted.
-class MacosThemeData with Diagnosticable {
+class MacosThemeData extends Equatable with Diagnosticable {
   /// Creates a [MacosThemeData] that's used to configure [MacosTheme].
   ///
   /// The [typography] [TextStyle] colors are black if the [brightness]
@@ -682,6 +683,27 @@ class MacosThemeData with Diagnosticable {
       ),
     );
   }
+
+  @override
+  List<Object?> get props => [
+        brightness,
+        primaryColor,
+        canvasColor,
+        typography,
+        pushButtonTheme,
+        dividerColor,
+        helpButtonTheme,
+        tooltipTheme,
+        visualDensity,
+        scrollbarTheme,
+        iconButtonTheme,
+        iconTheme,
+        popupButtonTheme,
+        pulldownButtonTheme,
+        datePickerTheme,
+        timePickerTheme,
+        searchFieldTheme,
+      ];
 }
 
 /// Brightness extensions

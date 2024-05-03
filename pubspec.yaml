@@ -1,6 +1,6 @@
 name: macos_ui
 description: Flutter widgets and themes implementing the current macOS design language.
-version: 2.0.5
+version: 2.0.6
 homepage: "https://macosui.dev"
 repository: "https://github.com/GroovinChip/macos_ui"
 
@@ -14,6 +14,7 @@ dependencies:
   macos_window_utils: ^1.2.0
   gradient_borders: ^1.0.0
   appkit_ui_element_colors: ^1.0.0
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:

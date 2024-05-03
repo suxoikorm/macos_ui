@@ -99,7 +99,7 @@ class _MacosPopupMenuItemButtonState<T>
         child: GestureDetector(
           onTap: _handleOnTap,
           child: Focus(
-            onKey: (FocusNode node, RawKeyEvent event) {
+            onKeyEvent: (FocusNode node, KeyEvent event) {
               if (event.logicalKey == LogicalKeyboardKey.enter) {
                 _handleOnTap();
                 return KeyEventResult.handled;
