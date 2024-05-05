@@ -189,8 +189,8 @@ class MacosThemeData extends Equatable with Diagnosticable {
   ///
   /// See also:
   ///
-  ///   * [MacosThemeData.light], which creates a light blue theme.
-  ///   * [MacosThemeData.dark], which creates a dark blue theme.
+  ///   * [MacosThemeData.light], which creates a light theme.
+  ///   * [MacosThemeData.dark], which creates a dark theme.
   factory MacosThemeData({
     Brightness? brightness,
     Color? primaryColor,
@@ -209,11 +209,17 @@ class MacosThemeData extends Equatable with Diagnosticable {
     MacosDatePickerThemeData? datePickerTheme,
     MacosTimePickerThemeData? timePickerTheme,
     MacosSearchFieldThemeData? searchFieldTheme,
+    AccentColor? accentColor,
+    bool? isMainWindow,
   }) {
     // ignore: no_leading_underscores_for_local_identifiers
     final Brightness _brightness = brightness ?? Brightness.light;
     final bool isDark = _brightness == Brightness.dark;
-    primaryColor ??= MacosColors.controlAccentColor;
+    primaryColor ??= _ColorProvider.getPrimaryColor(
+      accentColor: accentColor ?? AccentColor.blue,
+      isDarkModeEnabled: isDark,
+      isWindowMain: isMainWindow ?? true,
+    );
 
     canvasColor ??= isDark
         ? const Color.fromRGBO(40, 40, 40, 1.0)
@@ -266,16 +272,20 @@ class MacosThemeData extends Equatable with Diagnosticable {
     visualDensity ??= VisualDensity.adaptivePlatformDensity;
 
     iconTheme ??= MacosIconThemeData(
-      color: isDark
-          ? CupertinoColors.activeBlue.darkColor
-          : CupertinoColors.activeBlue.color,
+      color: _ColorProvider.getActiveColor(
+        accentColor: accentColor ?? AccentColor.blue,
+        isDarkModeEnabled: isDark,
+        isWindowMain: isMainWindow ?? true,
+      ),
       size: 20,
     );
 
     popupButtonTheme ??= MacosPopupButtonThemeData(
-      highlightColor: isDark
-          ? CupertinoColors.activeBlue.darkColor
-          : CupertinoColors.activeBlue.color,
+      highlightColor: _ColorProvider.getActiveColor(
+        accentColor: accentColor ?? AccentColor.blue,
+        isDarkModeEnabled: isDark,
+        isWindowMain: isMainWindow ?? true,
+      ),
       backgroundColor: isDark
           ? const Color.fromRGBO(255, 255, 255, 0.247)
           : const Color.fromRGBO(255, 255, 255, 1),
@@ -285,9 +295,11 @@ class MacosThemeData extends Equatable with Diagnosticable {
     );
 
     pulldownButtonTheme ??= MacosPulldownButtonThemeData(
-      highlightColor: isDark
-          ? CupertinoColors.activeBlue.darkColor
-          : CupertinoColors.activeBlue.color,
+      highlightColor: _ColorProvider.getActiveColor(
+        accentColor: accentColor ?? AccentColor.blue,
+        isDarkModeEnabled: isDark,
+        isWindowMain: isMainWindow ?? true,
+      ),
       backgroundColor: isDark
           ? const Color.fromRGBO(255, 255, 255, 0.247)
           : const Color.fromRGBO(255, 255, 255, 1),
@@ -355,9 +367,11 @@ class MacosThemeData extends Equatable with Diagnosticable {
     );
 
     searchFieldTheme ??= MacosSearchFieldThemeData(
-      highlightColor: isDark
-          ? CupertinoColors.activeBlue.darkColor
-          : CupertinoColors.activeBlue.color,
+      highlightColor: _ColorProvider.getActiveColor(
+        accentColor: accentColor ?? AccentColor.blue,
+        isDarkModeEnabled: isDark,
+        isWindowMain: isMainWindow ?? true,
+      ),
       resultsBackgroundColor: isDark
           ? const Color.fromRGBO(30, 30, 30, 1)
           : const Color.fromRGBO(242, 242, 247, 1),
@@ -381,6 +395,8 @@ class MacosThemeData extends Equatable with Diagnosticable {
       datePickerTheme: datePickerTheme,
       timePickerTheme: timePickerTheme,
       searchFieldTheme: searchFieldTheme,
+      accentColor: accentColor,
+      isMainWindow: isMainWindow,
     );
 
     final customizedData = defaultData.copyWith(
@@ -400,6 +416,8 @@ class MacosThemeData extends Equatable with Diagnosticable {
       pulldownButtonTheme: pulldownButtonTheme,
       datePickerTheme: datePickerTheme,
       searchFieldTheme: searchFieldTheme,
+      accentColor: accentColor,
+      isMainWindow: isMainWindow,
     );
 
     return defaultData.merge(customizedData);
@@ -429,14 +447,31 @@ class MacosThemeData extends Equatable with Diagnosticable {
     required this.datePickerTheme,
     required this.timePickerTheme,
     required this.searchFieldTheme,
+    required this.accentColor,
+    required this.isMainWindow,
   });
 
   /// A default light theme.
-  factory MacosThemeData.light() =>
-      MacosThemeData(brightness: Brightness.light);
+  factory MacosThemeData.light({
+    AccentColor? accentColor,
+    bool? isMainWindow,
+  }) =>
+      MacosThemeData(
+        brightness: Brightness.light,
+        accentColor: accentColor,
+        isMainWindow: isMainWindow,
+      );
 
   /// A default dark theme.
-  factory MacosThemeData.dark() => MacosThemeData(brightness: Brightness.dark);
+  factory MacosThemeData.dark({
+    AccentColor? accentColor,
+    bool? isMainWindow,
+  }) =>
+      MacosThemeData(
+        brightness: Brightness.dark,
+        accentColor: accentColor,
+        isMainWindow: isMainWindow,
+      );
 
   /// The default color theme. Same as [ThemeData.light].
   ///
@@ -505,6 +540,13 @@ class MacosThemeData extends Equatable with Diagnosticable {
   /// The default style for [MacosSearchField]s below the overall [MacosTheme]
   final MacosSearchFieldThemeData searchFieldTheme;
 
+  /// The accent color to use for the application.
+  final AccentColor? accentColor;
+
+  /// Whether the app is running in the main (i.e., the currently active)
+  /// window.
+  final bool? isMainWindow;
+
   /// Linearly interpolate between two themes.
   static MacosThemeData lerp(MacosThemeData a, MacosThemeData b, double t) {
     return MacosThemeData.raw(
@@ -552,6 +594,8 @@ class MacosThemeData extends Equatable with Diagnosticable {
         b.searchFieldTheme,
         t,
       ),
+      accentColor: t < 0.5 ? a.accentColor : b.accentColor,
+      isMainWindow: t < 0.5 ? a.isMainWindow : b.isMainWindow,
     );
   }
 
@@ -574,6 +618,8 @@ class MacosThemeData extends Equatable with Diagnosticable {
     MacosDatePickerThemeData? datePickerTheme,
     MacosTimePickerThemeData? timePickerTheme,
     MacosSearchFieldThemeData? searchFieldTheme,
+    AccentColor? accentColor,
+    bool? isMainWindow,
   }) {
     return MacosThemeData.raw(
       brightness: brightness ?? this.brightness,
@@ -593,6 +639,8 @@ class MacosThemeData extends Equatable with Diagnosticable {
       datePickerTheme: this.datePickerTheme.merge(datePickerTheme),
       timePickerTheme: this.timePickerTheme.merge(timePickerTheme),
       searchFieldTheme: this.searchFieldTheme.merge(searchFieldTheme),
+      accentColor: accentColor ?? this.accentColor,
+      isMainWindow: isMainWindow ?? this.isMainWindow,
     );
   }
 
@@ -617,6 +665,8 @@ class MacosThemeData extends Equatable with Diagnosticable {
       datePickerTheme: datePickerTheme.merge(other.datePickerTheme),
       timePickerTheme: timePickerTheme.merge(other.timePickerTheme),
       searchFieldTheme: searchFieldTheme.merge(other.searchFieldTheme),
+      accentColor: other.accentColor,
+      isMainWindow: other.isMainWindow,
     );
   }
 
@@ -682,6 +732,18 @@ class MacosThemeData extends Equatable with Diagnosticable {
         searchFieldTheme,
       ),
     );
+    properties.add(
+      DiagnosticsProperty<AccentColor>(
+        'accentColor',
+        accentColor,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty<bool>(
+        'isMainWindow',
+        isMainWindow,
+      ),
+    );
   }
 
   @override
@@ -703,6 +765,8 @@ class MacosThemeData extends Equatable with Diagnosticable {
         datePickerTheme,
         timePickerTheme,
         searchFieldTheme,
+        accentColor,
+        isMainWindow,
       ];
 }
 
@@ -715,5 +779,147 @@ extension BrightnessX on Brightness {
   T resolve<T>(T light, T dark) {
     if (isDark) return dark;
     return light;
+  }
+}
+
+class _ColorProvider {
+  _ColorProvider._();
+
+  /// Returns the primary color based on the provided parameters.
+  static Color getPrimaryColor({
+    required AccentColor accentColor,
+    required bool isDarkModeEnabled,
+    required bool isWindowMain,
+  }) {
+    if (isDarkModeEnabled) {
+      if (!isWindowMain) {
+        return const MacosColor.fromRGBO(100, 100, 100, 0.625);
+      }
+
+      switch (accentColor) {
+        case AccentColor.blue:
+          return const MacosColor.fromRGBO(29, 151, 255, 1.0);
+
+        case AccentColor.purple:
+          return const MacosColor.fromRGBO(204, 118, 207, 1.0);
+
+        case AccentColor.pink:
+          return const MacosColor.fromRGBO(255, 114, 194, 1.0);
+
+        case AccentColor.red:
+          return const MacosColor.fromRGBO(225, 118, 124, 1.0);
+
+        case AccentColor.orange:
+          return const MacosColor.fromRGBO(255, 147, 44, 1.0);
+
+        case AccentColor.yellow:
+          return const MacosColor.fromRGBO(255, 220, 24, 1.0);
+
+        case AccentColor.green:
+          return const MacosColor.fromRGBO(114, 202, 87, 1.0);
+
+        case AccentColor.graphite:
+          return const MacosColor.fromRGBO(152, 152, 152, 1.0);
+      }
+    }
+
+    if (!isWindowMain) {
+      return const MacosColor.fromRGBO(190, 190, 190, 1.0);
+    }
+
+    switch (accentColor) {
+      case AccentColor.blue:
+        return const MacosColor.fromRGBO(0, 88, 224, 1.0);
+
+      case AccentColor.purple:
+        return const MacosColor.fromRGBO(131, 44, 134, 1.0);
+
+      case AccentColor.pink:
+        return const MacosColor.fromRGBO(212, 45, 126, 1.0);
+
+      case AccentColor.red:
+        return const MacosColor.fromRGBO(203, 45, 43, 1.0);
+
+      case AccentColor.orange:
+        return const MacosColor.fromRGBO(198, 82, 0, 1.0);
+
+      case AccentColor.yellow:
+        return const MacosColor.fromRGBO(206, 154, 2, 1.0);
+
+      case AccentColor.green:
+        return const MacosColor.fromRGBO(56, 146, 30, 1.0);
+
+      case AccentColor.graphite:
+        return const MacosColor.fromRGBO(100, 100, 100, 1.0);
+    }
+  }
+
+  /// Returns the active color based on the provided parameters.
+  static Color getActiveColor({
+    required AccentColor accentColor,
+    required bool isDarkModeEnabled,
+    required bool isWindowMain,
+  }) {
+    if (isDarkModeEnabled) {
+      if (!isWindowMain) {
+        return const MacosColor.fromRGBO(76, 78, 65, 1.0);
+      }
+
+      switch (accentColor) {
+        case AccentColor.blue:
+          return const MacosColor.fromRGBO(22, 105, 229, 0.749);
+
+        case AccentColor.purple:
+          return const MacosColor.fromRGBO(204, 45, 202, 0.749);
+
+        case AccentColor.pink:
+          return const MacosColor.fromRGBO(229, 74, 145, 0.749);
+
+        case AccentColor.red:
+          return const MacosColor.fromRGBO(238, 64, 68, 0.749);
+
+        case AccentColor.orange:
+          return const MacosColor.fromRGBO(244, 114, 0, 0.749);
+
+        case AccentColor.yellow:
+          return const MacosColor.fromRGBO(233, 176, 0, 0.749);
+
+        case AccentColor.green:
+          return const MacosColor.fromRGBO(76, 177, 45, 0.749);
+
+        case AccentColor.graphite:
+          return const MacosColor.fromRGBO(129, 129, 122, 0.824);
+      }
+    }
+
+    if (!isWindowMain) {
+      return const MacosColor.fromRGBO(180, 180, 180, 1.0);
+    }
+
+    switch (accentColor) {
+      case AccentColor.blue:
+        return const MacosColor.fromRGBO(9, 129, 255, 0.749);
+
+      case AccentColor.purple:
+        return const MacosColor.fromRGBO(162, 28, 165, 0.749);
+
+      case AccentColor.pink:
+        return const MacosColor.fromRGBO(234, 81, 152, 0.749);
+
+      case AccentColor.red:
+        return const MacosColor.fromRGBO(220, 32, 40, 0.749);
+
+      case AccentColor.orange:
+        return const MacosColor.fromRGBO(245, 113, 0, 0.749);
+
+      case AccentColor.yellow:
+        return const MacosColor.fromRGBO(240, 180, 2, 0.749);
+
+      case AccentColor.green:
+        return const MacosColor.fromRGBO(66, 174, 33, 0.749);
+
+      case AccentColor.graphite:
+        return const MacosColor.fromRGBO(174, 174, 167, 0.847);
+    }
   }
 }
