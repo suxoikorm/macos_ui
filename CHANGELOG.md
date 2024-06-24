@@ -1,3 +1,12 @@
+## [2.0.7]
+### 🛠️ Updated 🛠️
+* Made most widgets aware of the user’s accent color and window state by adding respective fields to `MacosThemeData`.
+* `MacosCheckbox` has received a facelift to mimic the look and feel of native macOS checkboxes better.
+
+## [2.0.6]
+### 🛠️ Updated 🛠️
+* Implemented value equality for `MacosThemeData`.
+
 ## [2.0.5]
 ### 🛠️ Fixed 🛠️
 * Fixed `MacosRadioButton` check null value issue.
