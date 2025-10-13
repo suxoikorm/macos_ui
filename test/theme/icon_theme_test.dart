@@ -48,14 +48,11 @@ void main() {
         .map((node) => node.toString())
         .toList();
 
-    expect(
-      description,
-      [
-        'MacosColor: MacosColor(0xffffffff)',
-        'opacity: 0.0',
-        'size: 20.0',
-      ],
-    );
+    expect(description, [
+      'MacosColor: MacosColor(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB)',
+      'opacity: 0.0',
+      'size: 20.0',
+    ]);
   });
 
   testWidgets('Default values in widget tree', (tester) async {
@@ -81,7 +78,7 @@ void main() {
     );
 
     final theme = MacosIconTheme.of(capturedContext);
-    expect(theme.color, const MacosColor(0xbe0981ff));
+    expect(theme.color, const MacosColor.fromRGBO(9, 129, 255, 0.749));
     expect(theme.size, 20);
   });
 }
