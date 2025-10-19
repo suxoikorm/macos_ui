@@ -21,6 +21,7 @@ class SidebarItem with Diagnosticable {
     this.disclosureItems,
     this.expandDisclosureItems = false,
     this.trailing,
+    this.section = false,
   });
 
   /// The widget before [label].
@@ -71,6 +72,9 @@ class SidebarItem with Diagnosticable {
   /// <img src="https://imgur.com/REpW9f9.png" height="88" width="219" />
   final Widget? trailing;
 
+  /// If true, this item is a section header.
+  final bool? section;
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
@@ -79,12 +83,12 @@ class SidebarItem with Diagnosticable {
     properties.add(StringProperty('semanticLabel', semanticLabel));
     properties.add(DiagnosticsProperty<ShapeBorder>('shape', shape));
     properties.add(DiagnosticsProperty<FocusNode>('focusNode', focusNode));
-    properties.add(IterableProperty<SidebarItem>(
-      'disclosure items',
-      disclosureItems,
-    ));
     properties.add(
-        FlagProperty('expandDisclosureItems', value: expandDisclosureItems));
+      IterableProperty<SidebarItem>('disclosure items', disclosureItems),
+    );
+    properties.add(
+      FlagProperty('expandDisclosureItems', value: expandDisclosureItems),
+    );
     properties.add(DiagnosticsProperty<Widget?>('trailing', trailing));
   }
 }
