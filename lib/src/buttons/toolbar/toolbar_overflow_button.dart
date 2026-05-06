@@ -25,7 +25,13 @@ class ToolbarOverflowButton extends StatefulWidget {
 }
 
 class _ToolbarOverflowButtonState extends State<ToolbarOverflowButton> {
-  final popupKey = GlobalKey<ToolbarPopupState>();
+  late final GlobalKey<ToolbarPopupState> popupKey;
+
+  @override
+  void initState() {
+    super.initState();
+    popupKey = GlobalKey<ToolbarPopupState>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +44,7 @@ class _ToolbarOverflowButtonState extends State<ToolbarOverflowButton> {
       placement: ToolbarPopupPlacement.end,
       child: ToolBarIconButton(
         label: "",
-        icon: const MacosIcon(
-          CupertinoIcons.chevron_right_2,
-        ),
+        icon: const MacosIcon(CupertinoIcons.chevron_right_2),
         onPressed: () {
           popupKey.currentState?.openPopup();
         },
