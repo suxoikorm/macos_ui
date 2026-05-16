@@ -60,7 +60,7 @@ const BoxDecoration kDefaultFocusedBorderDecoration = BoxDecoration(
 
 const Color _kDisabledBackground = CupertinoDynamicColor.withBrightness(
   color: Color(0xfff6f6f9),
-  darkColor: Color.fromRGBO(255, 255, 255, 0.01),
+  darkColor: Color(0xff2b2b2b),
 );
 
 // An eyeballed value that moves the cursor slightly left of where it is
@@ -1364,10 +1364,9 @@ class _MacosTextFieldState extends State<MacosTextField>
         themeData.brightness.isDark
             ? MacosColors.white
             : MacosColors.black;
-        final Color disabledColor = MacosDynamicColor.resolve(
-          _kDisabledBackground,
-          context,
-        );
+        final Color disabledColor = themeData.brightness.isDark
+            ? const Color(0xff2b2b2b)
+            : const Color(0xfff6f6f9);
 
         Color? decorationColor = MacosDynamicColor.maybeResolve(
           widget.decoration?.color,
