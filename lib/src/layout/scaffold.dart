@@ -37,20 +37,6 @@ class MacosScaffold extends StatefulWidget {
 }
 
 class _MacosScaffoldState extends State<MacosScaffold> {
-  final _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(() => setState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMacosTheme(context));

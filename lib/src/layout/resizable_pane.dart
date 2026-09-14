@@ -266,7 +266,9 @@ class _ResizablePaneState extends State<ResizablePane> {
     super.initState();
     _cursor = _resizeOnTop ? SystemMouseCursors.resizeRow : SystemMouseCursors.resizeColumn;
     _size = widget.startSize;
-    _scrollController.addListener(() => setState(() {}));
+    // No listener rebuilding the pane on scroll: nothing in build() reads the
+    // offset, and the rebuild re-ran the whole builder — the list included —
+    // on every scroll tick.
   }
 
   @override
